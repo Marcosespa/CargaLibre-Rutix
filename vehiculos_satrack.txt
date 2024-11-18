@@ -1,0 +1,78 @@
+==================================================
+REPORTE DE UBICACIÓN DE VEHÍCULOS SATRACK
+Fecha y hora: 18/11/2024 15:30:58
+==================================================
+
+RESUMEN:
+Total de vehículos: 7
+Con ubicación: 7
+Sin ubicación: 0
+
+--------------------------------------------------
+
+DETALLE DE VEHÍCULOS:
+
+VEHÍCULO 1
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+• Placa: TFR591
+• Ubicación: Cll 12, 36 Bogotá D.C., Distrito Capital
+• Coordenadas: 4.616540, -74.099300
+• Estado: ✓ Ubicación encontrada
+
+--------------------------------------------------
+
+VEHÍCULO 2
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+• Placa: TTN935
+• Ubicación: Cll 12, 36 Bogotá D.C., Distrito Capital
+• Coordenadas: 4.745080, -74.045730
+• Estado: ✓ Ubicación encontrada
+
+--------------------------------------------------
+
+VEHÍCULO 3
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+• Placa: TTN961
+• Ubicación: Cll 12, 36 Bogotá D.C., Distrito Capital
+• Coordenadas: 4.619750, -74.094120
+• Estado: ✓ Ubicación encontrada
+
+--------------------------------------------------
+
+VEHÍCULO 4
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+• Placa: TZQ809
+• Ubicación: Cll 12, 36 Bogotá D.C., Distrito Capital
+• Coordenadas: 4.675130, -74.161120
+• Estado: ✓ Ubicación encontrada
+
+--------------------------------------------------
+
+VEHÍCULO 5
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+• Placa: UPO132
+• Ubicación: Cll 12, 36 Bogotá D.C., Distrito Capital
+• Coordenadas: 4.440210, -74.033810
+• Estado: ✓ Ubicación encontrada
+
+--------------------------------------------------
+
+VEHÍCULO 6
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+• Placa: UPO265
+• Ubicación: Cll 12, 36 Bogotá D.C., Distrito Capital
+• Coordenadas: 4.616270, -74.098590
+• Estado: ✓ Ubicación encontrada
+
+--------------------------------------------------
+
+VEHÍCULO 7
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+• Placa: WLS339
+• Ubicación: Cll 12, 36 Bogotá D.C., Distrito Capital
+• Coordenadas: 4.703453, -74.184042
+• Estado: ✓ Ubicación encontrada
+
+==================================================
+FIN DEL REPORTE
+==================================================
