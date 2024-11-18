@@ -2,6 +2,39 @@ import pandas as pd
 from WebScrappinSatrack import scrape_satrack
 import time
 
+def process_coordinates(coordinates_str):
+    """
+    Procesa el string de coordenadas y retorna latitud y longitud.
+    """
+    try:
+        if not coordinates_str or coordinates_str == 'No disponible':
+            return '', ''
+            
+        # Limpiar el string de coordenadas
+        coords_clean = coordinates_str.replace(' ', '').strip()
+        
+        # Intentar diferentes formatos de separación
+        if ',' in coords_clean:
+            lat, lon = coords_clean.split(',', 1)
+        elif ';' in coords_clean:
+            lat, lon = coords_clean.split(';', 1)
+        else:
+            print(f"Formato de coordenadas no reconocido: {coordinates_str}")
+            return '', ''
+            
+        # Validar que sean números
+        try:
+            float(lat)
+            float(lon)
+            return lat.strip(), lon.strip()
+        except ValueError:
+            print(f"Coordenadas no válidas: lat={lat}, lon={lon}")
+            return '', ''
+            
+    except Exception as e:
+        print(f"Error procesando coordenadas '{coordinates_str}': {str(e)}")
+        return '', ''
+
 def leer_excel(ruta_archivo):
     try:
         # Leer el archivo Excel usando pandas con engine='xlrd'
@@ -24,19 +57,39 @@ def leer_excel(ruta_archivo):
             usuario = fila['USUARIO GPS']
             password = fila['CONTRASEÑA GPS']
             print(f"\nProcesando credencial {credenciales_procesadas} de {total_filas}")
-            print(f"Intentando con usuario: {usuario}")
+            print(f"Intentando con usuario: {usuario} Y contraseña {password}")
             
             resultado_satrack = scrape_satrack(usuario, password)
+
+            # Imprimir el resultado completo de WebScrapping
+            print("\nResultado completo de WebScrapping:")
+            if resultado_satrack:
+                print("\nDatos obtenidos exitosamente:")
+                print(resultado_satrack)
+   
+
             
             if isinstance(resultado_satrack, dict) and 'vehicles' in resultado_satrack:
-                print("¡Credenciales válidas encontradas!")
+                print("\n¡Credenciales válidas encontradas!")
+                print("Vehículos encontrados:", len(resultado_satrack['vehicles']))
+                
+                # Imprimir cada vehículo en detalle
+                print("\nDetalle de cada vehículo:")
+                for i, vehicle in enumerate(resultado_satrack['vehicles'], 1):
+                    print(f"\nVehículo {i}:")
+                    for key, value in vehicle.items():
+                        print(f"{key}: {value}")
                 
                 # Procesar los vehículos encontrados
                 for vehicle in resultado_satrack['vehicles']:
-                    # Separar las coordenadas en latitud y longitud
-                    coords = vehicle['coordinates'].replace(' ', '').split(',') if vehicle['coordinates'] != 'No disponible' else ['', '']
-                    lat = coords[0] if len(coords) > 0 else ''
-                    lon = coords[1] if len(coords) > 1 else ''
+                    # Procesar coordenadas
+                    lat, lon = process_coordinates(vehicle['coordinates'])
+                    
+                    # Imprimir información de debug
+                    print(f"Placa: {vehicle['plate']}")
+                    print(f"Coordenadas originales: {vehicle['coordinates']}")
+                    print(f"Latitud procesada: {lat}")
+                    print(f"Longitud procesada: {lon}")
                     
                     all_vehicles_data.append({
                         'PLACA': vehicle['plate'].strip(),
@@ -45,9 +98,12 @@ def leer_excel(ruta_archivo):
                         'LONGITUD': lon
                     })
                 
-                print(f"Vehículos encontrados con este usuario: {len(resultado_satrack['vehicles'])}")
+                print(f"\nVehículos encontrados con este usuario: {len(resultado_satrack['vehicles'])}")
                 print(f"Total de vehículos acumulados: {len(all_vehicles_data)}")
-                print(f"Progreso: {credenciales_procesadas}/{total_filas} credenciales procesadas")
+                print("\nLista actual de vehículos acumulados:")
+                for idx, vehicle in enumerate(all_vehicles_data, 1):
+                    print(f"{idx}. Placa: {vehicle['PLACA']}, Lat: {vehicle['LATITUD']}, Lon: {vehicle['LONGITUD']}")
+                print(f"\nProgreso: {credenciales_procesadas}/{total_filas} credenciales procesadas")
             else:
                 print(f"Las credenciales no fueron válidas o no se obtuvieron datos")
         
