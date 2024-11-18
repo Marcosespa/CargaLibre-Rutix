@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import os
 from selenium.webdriver.common.keys import Keys
 
-def scrape_satrack():
+def scrape_satrack(username, password):
     # Add SSL certificate verification bypass
     ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -39,29 +39,24 @@ def scrape_satrack():
         driver.get("https://login.satrack.com/login")
         time.sleep(5)
 
-        # Intentar ingresar el usuario usando múltiples métodos
-        driver.execute_script("""
-            // Intentar encontrar el campo de usuario por diferentes atributos
+        # Modificar el script de JavaScript para usar el username proporcionado
+        driver.execute_script(f"""
             let usernameField = document.querySelector('input[placeholder="Usuario"], input[aria-label="Usuario"], input[name="Usuario"]') ||
                                document.querySelector('input[type="text"], input[type="email"]') ||
-                               document.getElementsByTagName('input')[0];  // Primera entrada del formulario
+                               document.getElementsByTagName('input')[0];
             
-            if (usernameField) {
-                // Limpiar y enfocar el campo
+            if (usernameField) {{
                 usernameField.focus();
                 usernameField.value = '';
+                usernameField.value = '{username}';
+                usernameField.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                usernameField.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                usernameField.dispatchEvent(new Event('blur', {{ bubbles: true }}));
                 
-                // Establecer el valor y disparar eventos
-                usernameField.value = 'martinespana@cargalibre.com.co';
-                usernameField.dispatchEvent(new Event('input', { bubbles: true }));
-                usernameField.dispatchEvent(new Event('change', { bubbles: true }));
-                usernameField.dispatchEvent(new Event('blur', { bubbles: true }));
-                
-                // Simular escritura de teclado
-                usernameField.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
-                usernameField.dispatchEvent(new KeyboardEvent('keypress', { key: 'a' }));
-                usernameField.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
-            }
+                usernameField.dispatchEvent(new KeyboardEvent('keydown', {{ key: 'a' }}));
+                usernameField.dispatchEvent(new KeyboardEvent('keypress', {{ key: 'a' }}));
+                usernameField.dispatchEvent(new KeyboardEvent('keyup', {{ key: 'a' }}));
+            }}
         """)
         print("Intento de ingreso de usuario mediante JavaScript")
 
@@ -74,14 +69,14 @@ def scrape_satrack():
 
         time.sleep(2)
 
-        # Usar JavaScript para la contraseña
-        driver.execute_script("""
+        # Modificar el script de JavaScript para usar el password proporcionado
+        driver.execute_script(f"""
             let password = document.querySelector('input#password, input[name="password"], input[type="password"]');
-            if (password) {
-                password.value = '#3A3652e7';
-                password.dispatchEvent(new Event('input', { bubbles: true }));
-                password.dispatchEvent(new Event('change', { bubbles: true }));
-            }
+            if (password) {{
+                password.value = '{password}';
+                password.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                password.dispatchEvent(new Event('change', {{ bubbles: true }}));
+            }}
         """)
         print("Contraseña ingresada")
 
@@ -96,10 +91,23 @@ def scrape_satrack():
         """)
         print("Botón de inicio de sesión presionado")
 
+        # Esperar y verificar si hay mensaje de error (30 segundos máximo)
+        try:
+            # Buscar mensajes comunes de error de login
+            error_message = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((
+                    By.XPATH, 
+                    "//div[contains(text(), 'incorrec') or contains(text(), 'inválid') or contains(text(), 'error')]"
+                ))
+            )
+            print("Error de inicio de sesión detectado")
+            return None
+        except:
+            print("No se detectaron errores de login, continuando...")
+
         # Esperar a que se complete el login y redirija
         print("Esperando redirección después del login...")
         time.sleep(30)  # Aumentamos el tiempo de espera inicial
-
         print("Verificando URL actual...")
         current_url = driver.current_url
         print(f"URL actual: {current_url}")
@@ -228,7 +236,7 @@ def scrape_satrack():
                             return locationInfo;
                         """)
 
-                        print("Información obtenida:", vehicle_info)
+                        # print("Información obtenida:", vehicle_info)
 
                         # Procesar la información obtenida
                         location = "No disponible"
@@ -256,9 +264,9 @@ def scrape_satrack():
                             'coordinates': coords
                         })
 
-                        print(f"Información encontrada para {vehicle_text}:")
-                        print(f"Ubicación: {location}")
-                        print(f"Coordenadas: {coords}")
+                        # print(f"Información encontrada para {vehicle_text}:")
+                        # print(f"Ubicación: {location}")
+                        # print(f"Coordenadas: {coords}")
 
                     except Exception as e:
                         print(f"Error obteniendo información: {str(e)}")
@@ -379,7 +387,10 @@ def scrape_satrack():
 
 # Ejecutar el script
 if __name__ == "__main__":
-    result = scrape_satrack()
+    # Ejemplo de uso con credenciales
+    username = "FERREMETALESDECOLOMBIA@GMAIL.COM"
+    password = "FERREMETALES01"
+    result = scrape_satrack(username, password)
     if result:
         print("\nDatos obtenidos exitosamente:")
         print(result)
