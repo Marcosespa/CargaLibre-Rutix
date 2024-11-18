@@ -1,66 +1,72 @@
 import pandas as pd
 from WebScrappinSatrack import scrape_satrack
+import time
 
 def leer_excel(ruta_archivo):
     try:
         # Leer el archivo Excel usando pandas con engine='xlrd'
         df = pd.read_excel(ruta_archivo, engine='xlrd')
         
-        # Filtrar solo las filas donde ENTIDAD GPS es SATRACK
-        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK'].head(3)
+        # Filtrar solo las filas donde ENTIDAD GPS es SATRACK y tomar los primeros 10
+        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK'].head(10)
         
         # Mostrar el total de filas encontradas después del filtro
         total_filas = len(df_filtrado)
         print(f"\nProcesando {total_filas} filas con SATRACK\n")
         
-        # Crear nuevas columnas para la información de Satrack
-        df_filtrado['UBICACION_SATRACK'] = ''
-        df_filtrado['COORDENADAS_SATRACK'] = ''
-        df_filtrado['ESTADO_SATRACK'] = ''
+        # Lista para acumular todos los vehículos
+        all_vehicles_data = []
+        credenciales_procesadas = 0
         
-        # Intentar con cada conjunto de credenciales hasta que uno funcione
+        # Intentar con cada conjunto de credenciales
         for index, fila in df_filtrado.iterrows():
+            credenciales_procesadas += 1
             usuario = fila['USUARIO GPS']
             password = fila['CONTRASEÑA GPS']
-            print(f"\nIntentando con usuario: {usuario}")
+            print(f"\nProcesando credencial {credenciales_procesadas} de {total_filas}")
+            print(f"Intentando con usuario: {usuario}")
             
             resultado_satrack = scrape_satrack(usuario, password)
             
-            if isinstance(resultado_satrack, dict) and 'error' in resultado_satrack:
-                print(f"Error con las credenciales: {resultado_satrack['message']}")
-                print("Intentando con el siguiente usuario...")
-                continue
-            
-            if resultado_satrack and 'vehicles' in resultado_satrack:
+            if isinstance(resultado_satrack, dict) and 'vehicles' in resultado_satrack:
                 print("¡Credenciales válidas encontradas!")
-                # Actualizar DataFrame con la información de Satrack
-                satrack_data = {vehicle['plate']: vehicle for vehicle in resultado_satrack['vehicles']}
                 
-                # Crear un nuevo DataFrame solo para las placas encontradas
-                placas_encontradas = []
+                # Procesar los vehículos encontrados
+                for vehicle in resultado_satrack['vehicles']:
+                    # Separar las coordenadas en latitud y longitud
+                    coords = vehicle['coordinates'].replace(' ', '').split(',') if vehicle['coordinates'] != 'No disponible' else ['', '']
+                    lat = coords[0] if len(coords) > 0 else ''
+                    lon = coords[1] if len(coords) > 1 else ''
+                    
+                    all_vehicles_data.append({
+                        'PLACA': vehicle['plate'].strip(),
+                        'UBICACION': vehicle['location'],
+                        'LATITUD': lat,
+                        'LONGITUD': lon
+                    })
                 
-                for idx, fila in df_filtrado.iterrows():
-                    placa = fila['PLACA']
-                    if placa in satrack_data:
-                        vehicle_info = satrack_data[placa]
-                        df_filtrado.at[idx, 'UBICACION_SATRACK'] = vehicle_info['location']
-                        df_filtrado.at[idx, 'COORDENADAS_SATRACK'] = vehicle_info['coordinates']
-                        df_filtrado.at[idx, 'ESTADO_SATRACK'] = vehicle_info['status']
-                        placas_encontradas.append(idx)
-                        print(f"Actualizada información para placa: {placa}")
-                
-                # Filtrar solo las filas con placas encontradas
-                df_final = df_filtrado.loc[placas_encontradas]
-                
-                # Guardar el DataFrame actualizado
-                nombre_archivo = ruta_archivo.replace('.xls', '_actualizado.xlsx')
-                df_final.to_excel(nombre_archivo, index=False)
-                print(f"\nArchivo actualizado guardado como: {nombre_archivo}")
-                print(f"Total de placas encontradas y actualizadas: {len(placas_encontradas)}")
-                return True
-                
-        print("Se agotaron todos los intentos de inicio de sesión")
-        return False
+                print(f"Vehículos encontrados con este usuario: {len(resultado_satrack['vehicles'])}")
+                print(f"Total de vehículos acumulados: {len(all_vehicles_data)}")
+                print(f"Progreso: {credenciales_procesadas}/{total_filas} credenciales procesadas")
+            else:
+                print(f"Las credenciales no fueron válidas o no se obtuvieron datos")
+        
+        # Al final, guardar todos los vehículos en un solo archivo
+        if all_vehicles_data:
+            # Crear DataFrame con todos los vehículos acumulados
+            df_final = pd.DataFrame(all_vehicles_data)
+            
+            # Guardar el DataFrame final
+            timestamp = time.strftime('%Y%m%d_%H%M%S')
+            nombre_archivo = ruta_archivo.replace('.xls', f'_satrack_completo_{timestamp}.xlsx')
+            df_final.to_excel(nombre_archivo, index=False)
+            print(f"\nArchivo final guardado como: {nombre_archivo}")
+            print(f"Total de vehículos guardados: {len(all_vehicles_data)}")
+        else:
+            print("\nNo se encontraron vehículos con ninguna credencial")
+            
+        print(f"\nProceso completado. Se procesaron {credenciales_procesadas} conjuntos de credenciales")
+        return True
             
     except Exception as e:
         print(f"Error al procesar el archivo: {str(e)}")
