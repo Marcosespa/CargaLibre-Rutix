@@ -68,7 +68,7 @@ def leer_excel(ruta_archivo):
 
     try:
         df = pd.read_excel(ruta_archivo, engine='xlrd')
-        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK'].head(10)
+        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK']
         
         total_filas = len(df_filtrado)
         print(f"\nProcesando {total_filas} filas con SATRACK\n")
