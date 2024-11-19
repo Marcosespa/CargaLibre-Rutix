@@ -4,6 +4,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import signal
+import undetected_chromedriver as uc
+from selenium.webdriver.chrome.options import Options
 
 # Agregar variable global para controlar la interrupción
 interrupted = False
