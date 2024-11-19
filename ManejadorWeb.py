@@ -72,6 +72,21 @@ def process_credentials(credentials):
         print(f"Error procesando credencial {usuario}: {str(e)}")
         return []
 
+def get_output_filename(vm_id, ruta_archivo):
+    """Determina el nombre del archivo de salida según el ID de la VM"""
+    timestamp = time.strftime('%Y%m%d_%H%M%S')
+    base_name = ruta_archivo.rsplit('.', 1)[0]  # Nombre base sin extensión
+    
+    vm_names = {
+        0: "NORTE",
+        1: "SUR",
+        2: "ORIENTE",
+        3: "OCCIDENTE"
+    }
+    
+    vm_name = vm_names.get(vm_id, f"VM{vm_id}")
+    return f"{base_name}_satrack_{vm_name}_{timestamp}.xlsx"
+
 def leer_excel(ruta_archivo, vm_id, total_vms=4, threads=3):
     """
     Args:
@@ -130,8 +145,7 @@ def leer_excel(ruta_archivo, vm_id, total_vms=4, threads=3):
         # Guardar resultados con identificador de VM
         if all_vehicles_data:
             df_final = pd.DataFrame(all_vehicles_data)
-            timestamp = time.strftime('%Y%m%d_%H%M%S')
-            nombre_archivo = ruta_archivo.replace('.xls', f'_satrack_VM{vm_id}_{timestamp}.xlsx')
+            nombre_archivo = get_output_filename(vm_id, ruta_archivo)
             df_final.to_excel(nombre_archivo, index=False)
             print(f"\nVM_{vm_id} - Archivo guardado como: {nombre_archivo}")
             print(f"Total de vehículos guardados: {len(all_vehicles_data)}")
