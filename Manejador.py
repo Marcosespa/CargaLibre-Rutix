@@ -41,7 +41,7 @@ def leer_excel(ruta_archivo):
         df = pd.read_excel(ruta_archivo, engine='xlrd')
         
         # Filtrar solo las filas donde ENTIDAD GPS es SATRACK y tomar los primeros 10
-        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK'].head(10)
+        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK'].head(20)
         
         # Mostrar el total de filas encontradas después del filtro
         total_filas = len(df_filtrado)

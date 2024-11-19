@@ -193,80 +193,63 @@ def scrape_satrack(username, password):
 
                     # Intentar obtener información usando JavaScript
                     try:
-                        # Obtener información del vehículo usando JavaScript
                         vehicle_info = driver.execute_script("""
-                            // Función para buscar texto en elementos
-                            function findTextInElements(selector) {
-                                const elements = document.querySelectorAll(selector);
-                                for (const el of elements) {
-                                    if (el.offsetParent !== null) {  // Elemento visible
-                                        const text = el.textContent.trim();
-                                        if (text && text.length > 5) return text;
-                                    }
+                            // Hacer clic en el vehículo para mostrar el popup
+                            const vehicleElement = arguments[0];
+                            vehicleElement.click();
+                            
+                            // Esperar un momento para que se muestre el popup
+                            await new Promise(resolve => setTimeout(resolve, 2000));
+                            
+                            // Función para extraer coordenadas del texto
+                            function extractCoordinates(text) {
+                                if (!text) return null;
+                                const coordPattern = /Lat\/Long:\s*([-]?\d+\.\d+),\s*([-]?\d+\.\d+)/i;
+                                const match = text.match(coordPattern);
+                                if (match) {
+                                    return `${match[1]}, ${match[2]}`;
                                 }
                                 return null;
                             }
 
-                            // Buscar información en diferentes elementos
-                            const locationInfo = {
-                                // Buscar en elementos con clase específica
-                                address: findTextInElements('.location-info, .address-info, .vehicle-location'),
-                                
-                                // Buscar en elementos del popup de Google Maps
-                                mapInfo: findTextInElements('.gm-style-iw, .gm-style-iw-d'),
-                                
-                                // Buscar en cualquier elemento que contenga coordenadas
-                                coords: findTextInElements('[class*="coord"], [class*="location"]'),
-                                
-                                // Buscar en elementos de dirección
-                                street: findTextInElements('[class*="street"], [class*="address"]')
-                            };
+                            // Intentar obtener coordenadas del popup
+                            const popup = document.querySelector('.gm-style-iw');
+                            if (popup) {
+                                const coordsFromPopup = extractCoordinates(popup.textContent);
+                                if (coordsFromPopup) return { coordinates: coordsFromPopup };
+                            }
 
-                            // Intentar obtener coordenadas del mapa
+                            // Si no se encuentra en el popup, intentar obtener del mapa
                             try {
                                 const map = document.querySelector('#map');
                                 if (map && map.__gm) {
                                     const center = map.__gm.get('center');
-                                    locationInfo.mapCoords = `${center.lat()}, ${center.lng()}`;
+                                    return { coordinates: `${center.lat()}, ${center.lng()}` };
                                 }
                             } catch(e) {
                                 console.error('Error getting map coordinates:', e);
                             }
 
-                            return locationInfo;
-                        """)
+                            // Si no se encontraron coordenadas, buscar en cualquier elemento visible
+                            const elements = document.querySelectorAll('*');
+                            for (const el of elements) {
+                                if (el.offsetParent !== null) {  // Elemento visible
+                                    const coordsFromText = extractCoordinates(el.textContent);
+                                    if (coordsFromText) return { coordinates: coordsFromText };
+                                }
+                            }
 
-                        # print("Información obtenida:", vehicle_info)
+                            return { coordinates: 'No disponible' };
+                        """, vehicle)
 
                         # Procesar la información obtenida
-                        location = "No disponible"
-                        coords = "No disponible"
-
-                        if vehicle_info:
-                            # Intentar obtener la ubicación de diferentes fuentes
-                            location_sources = [
-                                vehicle_info.get('address'),
-                                vehicle_info.get('street'),
-                                vehicle_info.get('mapInfo')
-                            ]
-                            
-                            for source in location_sources:
-                                if source and len(source.strip()) > 5:
-                                    location = source.strip()
-                                    break
-
-                            # Intentar obtener coordenadas
-                            coords = vehicle_info.get('mapCoords') or vehicle_info.get('coords') or "No disponible"
+                        coords = vehicle_info.get('coordinates', 'No disponible')
 
                         vehicles_info.append({
                             'plate': vehicle_text,
-                            'location': location,
+                            'location': "No disponible",
                             'coordinates': coords
                         })
-
-                        # print(f"Información encontrada para {vehicle_text}:")
-                        # print(f"Ubicación: {location}")
-                        # print(f"Coordenadas: {coords}")
 
                     except Exception as e:
                         print(f"Error obteniendo información: {str(e)}")
@@ -388,8 +371,8 @@ def scrape_satrack(username, password):
 # Ejecutar el script
 if __name__ == "__main__":
     # Ejemplo de uso con credenciales
-    username = "JAIROMORALES2664"
-    password = "JAIRO5026"
+    username = "motocargasas"
+    password = "JU@nse0914"
     result = scrape_satrack(username, password)
     if result:
         print("\nDatos obtenidos exitosamente:")
