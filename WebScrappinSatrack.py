@@ -1,7 +1,6 @@
 import ssl
 import time
 import undetected_chromedriver as uc
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -19,11 +18,9 @@ def scrape_satrack(username, password):
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--ignore-ssl-errors")
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36')
-    chrome_driver_path = ChromeDriverManager().install()  # O usa '/usr/local/bin/chromedriver' si lo descargaste manualmente
 
-    driver = uc.Chrome(executable_path=ChromeDriverManager().install(), options=options)
     # Inicializar el driver
-    #driver = uc.Chrome(driver_executable_path="/usr/local/bin/chromedriver", options=options)
+    driver = uc.Chrome(driver_executable_path="/usr/local/bin/chromedriver", options=options)
 
 
     def print_element_info(element, name="Elemento"):
