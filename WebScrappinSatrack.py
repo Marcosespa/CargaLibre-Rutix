@@ -106,6 +106,7 @@ def scrape_satrack(username, password):
             return None
         except:
             print("No se detectaron errores de login, continuando...")
+        print("Ingreso exitoso, esperando redirección...")
 
         # Esperar a que se complete el login y redirija
         print("Esperando redirección después del login...")
