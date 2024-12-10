@@ -3,18 +3,6 @@ from WebScrappinSatrack import scrape_satrack
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-import signal
-import undetected_chromedriver as uc
-from selenium.webdriver.chrome.options import Options
-
-# Agregar variable global para controlar la interrupción
-interrupted = False
-
-def signal_handler(signum, frame):
-    """Manejador de señal para Ctrl+C"""
-    global interrupted
-    print("\nSeñal de interrupción recibida. Guardando progreso actual...")
-    interrupted = True
 
 def process_coordinates(coordinates_str):
     """
@@ -74,113 +62,59 @@ def process_credentials(credentials):
         print(f"Error procesando credencial {usuario}: {str(e)}")
         return []
 
-def get_output_filename(vm_id, ruta_archivo):
-    """Determina el nombre del archivo de salida según el ID de la VM"""
-    timestamp = time.strftime('%Y%m%d_%H%M%S')
-    base_name = ruta_archivo.rsplit('.', 1)[0]  # Nombre base sin extensión
-    
-    vm_names = {
-        0: "NORTE",
-        1: "SUR",
-        2: "ORIENTE",
-        3: "OCCIDENTE"
-    }
-    
-    vm_name = vm_names.get(vm_id, f"VM{vm_id}")
-    return f"{base_name}_satrack_{vm_name}_{timestamp}.xlsx"
-
-def leer_excel(ruta_archivo, vm_id, total_vms=4, threads=3):
-    """
-    Args:
-        ruta_archivo: Ruta al archivo Excel
-        vm_id: ID de la máquina virtual (0-3)
-        total_vms: Número total de VMs
-        threads: Número de threads por VM
-    """
-    signal.signal(signal.SIGINT, signal_handler)
-    
+def leer_excel(ruta_archivo, inicio, fin):
     tiempo_inicio = datetime.now()
-    print(f"\nInicio del proceso VM_{vm_id}: {tiempo_inicio.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"\nInicio del proceso: {tiempo_inicio.strftime('%Y-%m-%d %H:%M:%S')}")
 
     try:
-        # Leer todo el archivo
         df = pd.read_excel(ruta_archivo, engine='xlrd')
-        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK']
+        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK'].iloc[inicio:fin]
         
-        # Calcular el rango para esta VM
-        total_registros = len(df_filtrado)
-        registros_por_vm = total_registros // total_vms
-        start_index = vm_id * registros_por_vm
-        end_index = start_index + registros_por_vm if vm_id < total_vms - 1 else len(df_filtrado)
-        
-        # Obtener el subset para esta VM
-        df_vm = df_filtrado.iloc[start_index:end_index]
-        
-        print(f"\nVM_{vm_id} procesando registros {start_index} a {end_index} ({end_index-start_index} registros)")
-        print(f"Usando {threads} threads")
+        total_filas = len(df_filtrado)
+        print(f"\nProcesando {total_filas} filas con SATRACK (filas {inicio} a {fin})\n")
         
         all_vehicles_data = []
-        credenciales_procesadas = 0
         
-        # Ajustar ThreadPoolExecutor al número de threads especificado
-        with ThreadPoolExecutor(max_workers=threads) as executor:
-            futures = []
-            credentials_list = df_vm.to_dict('records')
+        # Procesar credenciales en paralelo
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            credentials_list = df_filtrado.to_dict('records')
+            # Usar map en lugar de submit para mantener el orden
+            results = list(executor.map(process_credentials, credentials_list))
             
-            for credentials in credentials_list:
-                if interrupted:
-                    break
-                futures.append(executor.submit(process_credentials, credentials))
-            
-            total_credenciales = len(credentials_list)
-            for future in futures:
-                try:
-                    vehicles = future.result()
-                    all_vehicles_data.extend(vehicles)
-                    credenciales_procesadas += 1
-                    print(f"VM_{vm_id} Progreso: {credenciales_procesadas}/{total_credenciales} "
-                          f"({(credenciales_procesadas/total_credenciales)*100:.1f}%)")
-                except Exception as e:
-                    credenciales_procesadas += 1
-                    print(f"Error en proceso VM_{vm_id}: {str(e)}")
-
-        # Guardar resultados con identificador de VM
+            # Combinar resultados
+            for vehicles in results:
+                all_vehicles_data.extend(vehicles)
+        
+        # Guardar resultados
         if all_vehicles_data:
             df_final = pd.DataFrame(all_vehicles_data)
-            nombre_archivo = get_output_filename(vm_id, ruta_archivo)
+            timestamp = time.strftime('%Y%m%d_%H%M%S')
+            nombre_archivo = ruta_archivo.replace('.xls', f'_satrack_parte_{inicio}_{fin}_{timestamp}.xlsx')
             df_final.to_excel(nombre_archivo, index=False)
-            print(f"\nVM_{vm_id} - Archivo guardado como: {nombre_archivo}")
+            print(f"\nArchivo final guardado como: {nombre_archivo}")
             print(f"Total de vehículos guardados: {len(all_vehicles_data)}")
         
         tiempo_fin = datetime.now()
         tiempo_total = tiempo_fin - tiempo_inicio
-        print(f"\nVM_{vm_id} - Tiempo total de ejecución: {tiempo_total}")
+        print(f"\nTiempo total de ejecución: {tiempo_total}")
         
         return True
             
     except Exception as e:
         tiempo_fin = datetime.now()
         tiempo_total = tiempo_fin - tiempo_inicio
-        print(f"Error en VM_{vm_id}: {str(e)}")
+        print(f"Error al procesar el archivo: {str(e)}")
         print(f"\nTiempo hasta el error: {tiempo_total}")
         return False
 
+    
 if __name__ == "__main__":
     import sys
-    
-    if len(sys.argv) < 2:
-        print("Uso: python ManejadorWeb.py <vm_id> [ruta_archivo]")
-        sys.exit(1)
-    
-    vm_id = int(sys.argv[1])  # 0, 1, 2, o 3
-    ruta_archivo = sys.argv[2] if len(sys.argv) > 2 else "ruta/al/archivo.xls"
-    
-    # Configuración para cada VM
-    TOTAL_VMS = 4
-    THREADS_PER_VM = 3
-    
-    if vm_id < 0 or vm_id >= TOTAL_VMS:
-        print(f"VM ID debe estar entre 0 y {TOTAL_VMS-1}")
-        sys.exit(1)
-    
-    leer_excel(ruta_archivo, vm_id, TOTAL_VMS, THREADS_PER_VM)
+    #ruta_archivo = "/Users/marcosrodrigo/Desktop/Rutix Final/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
+
+    # Ruta del archivo y parámetros para dividir el procesamiento
+    ruta_archivo = "/proyecto/manejador/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
+    inicio = int(sys.argv[1])  # Fila inicial
+    fin = int(sys.argv[2])     # Fila final
+
+    leer_excel(ruta_archivo, inicio, fin)

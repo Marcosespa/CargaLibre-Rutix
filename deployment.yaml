@@ -1,57 +1,81 @@
 resources:
-- name: vm-instance-template
-  type: compute.v1.instanceTemplate
+- name: carga-libre-instance-1
+  type: compute.v1.instance
   properties:
-    properties:
-      machineType: e2-medium  # Tipo de máquina (2 vCPUs, 4GB RAM)
-      disks:
-      - boot: true
-        autoDelete: true
-        initializeParams:
-          sourceImage: projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts
-          diskSizeGb: 20  # Tamaño del disco en GB
-      networkInterfaces:
-      - network: global/networks/default
-        accessConfigs:
-        - type: ONE_TO_ONE_NAT
-          name: External NAT
-      metadata:
-        items:
-        - key: startup-script
-          value: |
-            #!/bin/bash
-            echo "Iniciando configuración del sistema..." > /var/log/startup-script.log
-
-            # Actualizar sistema
-            sudo apt update && sudo apt upgrade -y >> /var/log/startup-script.log
-
-            # Instalar Python y pip
-            sudo apt install -y python3 python3-pip >> /var/log/startup-script.log
-
-            # Instalar Google Chrome
-            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb >> /var/log/startup-script.log
-            sudo apt install -y ./google-chrome-stable_current_amd64.deb >> /var/log/startup-script.log
-
-            # Descargar e instalar ChromeDriver (versión compatible con Google Chrome instalado)
-            CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1)
-            wget https://chromedriver.storage.googleapis.com/$CHROME_VERSION.0/chromedriver_linux64.zip >> /var/log/startup-script.log
-            unzip chromedriver_linux64.zip >> /var/log/startup-script.log
-            sudo mv chromedriver /usr/local/bin/
-            rm chromedriver_linux64.zip >> /var/log/startup-script.log
-
-            # Instalar dependencias del proyecto
-            pip3 install pandas selenium undetected-chromedriver >> /var/log/startup-script.log
-
-            # Configuración completada
-            echo "Configuración completada en $(hostname)" >> /var/log/startup-script.log
-
-- name: vm-satrack-group
-  type: compute.v1.instanceGroupManager
-  properties:
-    baseInstanceName: vm-satrack
-    instanceTemplate: $(ref.vm-instance-template.selfLink)
-    targetSize: 4  # Número de máquinas virtuales a crear
     zone: us-central1-a
-    namedPorts:
-    - name: http
-      port: 80
+    machineType: https://www.googleapis.com/compute/v1/projects/cargalibre-39f90/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: projects/debian-cloud/global/images/family/debian-11
+    networkInterfaces:
+    - network: global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    metadata:
+      startup-script: |
+        #!/bin/bash
+        mkdir -p /proyecto/manejador
+        chown $(whoami):$(whoami) /proyecto/manejador
+        cd /proyecto/manejador
+        apt-get update
+        apt-get install -y git python3 python3-pip
+        git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
+        cd /opt/CargaLibre-Rutix
+        pip3 install -r requirements.txt
+
+- name: carga-libre-instance-2
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/cargalibre-39f90/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: projects/debian-cloud/global/images/family/debian-11
+    networkInterfaces:
+    - network: global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    metadata:
+      startup-script: |
+        #!/bin/bash
+        mkdir -p /proyecto/manejador
+        chown $(whoami):$(whoami) /proyecto/manejador
+        cd /proyecto/manejador
+        apt-get update
+        apt-get install -y git python3 python3-pip
+        git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
+        cd /opt/CargaLibre-Rutix
+        pip3 install -r requirements.txt
+
+- name: carga-libre-instance-3
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/cargalibre-39f90/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: projects/debian-cloud/global/images/family/debian-11
+    networkInterfaces:
+    - network: global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    metadata:
+      startup-script: |
+        #!/bin/bash
+        mkdir -p /proyecto/manejador
+        chown $(whoami):$(whoami) /proyecto/manejador
+        cd /proyecto/manejador
+        apt-get update
+        apt-get install -y git python3 python3-pip
+        git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
+        cd /opt/CargaLibre-Rutix
+        pip3 install -r requirements.txt
