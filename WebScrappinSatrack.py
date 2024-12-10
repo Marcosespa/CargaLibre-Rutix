@@ -21,8 +21,7 @@ def scrape_satrack(username, password):
 
     # Inicializar el driver
     driver = uc.Chrome(driver_executable_path="/usr/local/bin/chromedriver", options=options)
-
-
+    
     def print_element_info(element, name="Elemento"):
         """Imprime información detallada sobre un elemento web."""
         try:

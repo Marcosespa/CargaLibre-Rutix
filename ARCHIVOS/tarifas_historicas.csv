@@ -1,0 +1,11 @@
+fecha;origen;destino;distancia_km;tipo_vehiculo;peajes;clima;trafico;tarifa
+1/01/23;Bogot‡;Medell’n;414;Peque–o;25000;Soleado;Fluido;500000
+2/01/23;Medell’n;Cali;419;Grande;30000;Lluvioso;Moderado;800000
+3/01/23;Cali;Buenaventura;117;Mediano;15000;Nublado;Fluido;200000
+4/01/23;Bogot‡;Bucaramanga;400;Peque–o;20000;Soleado;Fluido;450000
+5/01/23;Bucaramanga;Cœcuta;194;Mediano;10000;Lluvioso;Pesado;300000
+6/01/23;Bogot‡;Villavicencio;86;Grande;15000;Soleado;Fluido;180000
+7/01/23;Medell’n;Cartagena;642;Grande;40000;Soleado;Moderado;1000000
+8/01/23;Cali;Palmira;30;Peque–o;5000;Nublado;Fluido;80000
+9/01/23;Bogot‡;Tunja;140;Mediano;10000;Lluvioso;Moderado;250000
+10/01/23;Cartagena;Barranquilla;120;Peque–o;15000;Soleado;Fluido;180000

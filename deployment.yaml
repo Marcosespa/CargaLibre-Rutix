@@ -25,6 +25,12 @@ resources:
           cd /home/labs
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install git
+          sudo apt install python3 python3-pip -y
+          sudo wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /home/labs/CargaLibre-Rutix
 
 - name: cargalibre-2
   type: compute.v1.instance
@@ -52,6 +58,9 @@ resources:
           cd /home/labs
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install python3 python3-pip -y
 
 - name: cargalibre-3
   type: compute.v1.instance
@@ -79,3 +88,6 @@ resources:
           cd /home/labs
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install python3 python3-pip -y
