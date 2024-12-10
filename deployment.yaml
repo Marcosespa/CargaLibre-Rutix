@@ -79,4 +79,3 @@ resources:
           cd /home/labs
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
-de
