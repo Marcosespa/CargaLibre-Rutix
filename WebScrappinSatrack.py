@@ -20,8 +20,7 @@ def scrape_satrack(username, password):
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36')
 
     # Inicializar el driver
-    driver = uc.Chrome(driver_executable_path="/usr/local/bin/chromedriver", options=options)
-    
+    driver = uc.Chrome(driver_executable_path="/usr/bin/chromedriver", options=options)    
     def print_element_info(element, name="Elemento"):
         """Imprime información detallada sobre un elemento web."""
         try:
