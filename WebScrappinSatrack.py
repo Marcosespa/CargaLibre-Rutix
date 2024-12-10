@@ -23,7 +23,10 @@ def scrape_satrack(username, password):
     options.add_argument("--headless") 
     # Inicializar el driver
     driver = uc.Chrome(driver_executable_path="/usr/bin/chromedriver", options=options)    
-    driver.set_script_timeout(30)  # Aumenta el tiempo de espera a 30 segundos
+    
+    
+    driver.set_page_load_timeout(60)  # Aumenta el tiempo de espera para la carga de la página
+    driver.set_script_timeout(60)      
     def print_element_info(element, name="Elemento"):
         """Imprime información detallada sobre un elemento web."""
         try:
