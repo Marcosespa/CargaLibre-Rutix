@@ -16,7 +16,6 @@
       accessConfigs:
       - name: External NAT
         type: ONE_TO_ONE_NAT
-    tags:
     metadata:
       items:
       - key: startup-script
@@ -43,7 +42,6 @@
       accessConfigs:
       - name: External NAT
         type: ONE_TO_ONE_NAT
-    tags:
     metadata:
       items:
       - key: startup-script
@@ -70,7 +68,6 @@
       accessConfigs:
       - name: External NAT
         type: ONE_TO_ONE_NAT
-    tags:
     metadata:
       items:
       - key: startup-script
