@@ -1,0 +1,81 @@
+resources:
+- name: carga-libre-instance-1
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/cargalibre-39f90/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: projects/debian-cloud/global/images/family/debian-11
+    networkInterfaces:
+    - network: global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    metadata:
+      startup-script: |
+        #!/bin/bash
+        mkdir -p /proyecto/manejador
+        chown $(whoami):$(whoami) /proyecto/manejador
+        cd /proyecto/manejador
+        apt-get update
+        apt-get install -y git python3 python3-pip
+        git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
+        cd /opt/CargaLibre-Rutix
+        pip3 install -r requirements.txt
+
+- name: carga-libre-instance-2
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/cargalibre-39f90/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: projects/debian-cloud/global/images/family/debian-11
+    networkInterfaces:
+    - network: global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    metadata:
+      startup-script: |
+        #!/bin/bash
+        mkdir -p /proyecto/manejador
+        chown $(whoami):$(whoami) /proyecto/manejador
+        cd /proyecto/manejador
+        apt-get update
+        apt-get install -y git python3 python3-pip
+        git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
+        cd /opt/CargaLibre-Rutix
+        pip3 install -r requirements.txt
+
+- name: carga-libre-instance-3
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/cargalibre-39f90/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: projects/debian-cloud/global/images/family/debian-11
+    networkInterfaces:
+    - network: global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    metadata:
+      startup-script: |
+        #!/bin/bash
+        mkdir -p /proyecto/manejador
+        chown $(whoami):$(whoami) /proyecto/manejador
+        cd /proyecto/manejador
+        apt-get update
+        apt-get install -y git python3 python3-pip
+        git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
+        cd /opt/CargaLibre-Rutix
+        pip3 install -r requirements.txt

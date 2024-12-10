@@ -109,5 +109,7 @@ def leer_excel(ruta_archivo):
 
 # Ejemplo de uso
 if __name__ == "__main__":
-    ruta_archivo = "/Users/marcosrodrigo/Desktop/Rutix Final/CargaLibre-Rutix/BASE DE DATOS TERCERO.xls"
+    #ruta_archivo = "/Users/marcosrodrigo/Desktop/Rutix Final/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
+    ruta_archivo = "/proyecto/manejador/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
+
     leer_excel(ruta_archivo)
