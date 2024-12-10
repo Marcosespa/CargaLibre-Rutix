@@ -26,9 +26,6 @@
           cd /home/labs
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
-
-
-
 - name: cargaLibre-2
   type: compute.v1.instance
   properties:
@@ -56,8 +53,6 @@
           cd /home/labs
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
-
-
 - name: cargaLibre-3
   type: compute.v1.instance
   properties:
