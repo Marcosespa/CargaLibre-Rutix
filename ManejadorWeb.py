@@ -62,16 +62,16 @@ def process_credentials(credentials):
         print(f"Error procesando credencial {usuario}: {str(e)}")
         return []
 
-def leer_excel(ruta_archivo):
+def leer_excel(ruta_archivo, inicio, fin):
     tiempo_inicio = datetime.now()
     print(f"\nInicio del proceso: {tiempo_inicio.strftime('%Y-%m-%d %H:%M:%S')}")
 
     try:
         df = pd.read_excel(ruta_archivo, engine='xlrd')
-        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK']
+        df_filtrado = df[df['ENTIDAD GPS'] == 'SATRACK'].iloc[inicio:fin]
         
         total_filas = len(df_filtrado)
-        print(f"\nProcesando {total_filas} filas con SATRACK\n")
+        print(f"\nProcesando {total_filas} filas con SATRACK (filas {inicio} a {fin})\n")
         
         all_vehicles_data = []
         
@@ -89,7 +89,7 @@ def leer_excel(ruta_archivo):
         if all_vehicles_data:
             df_final = pd.DataFrame(all_vehicles_data)
             timestamp = time.strftime('%Y%m%d_%H%M%S')
-            nombre_archivo = ruta_archivo.replace('.xls', f'_satrack_completo_{timestamp}.xlsx')
+            nombre_archivo = ruta_archivo.replace('.xls', f'_satrack_parte_{inicio}_{fin}_{timestamp}.xlsx')
             df_final.to_excel(nombre_archivo, index=False)
             print(f"\nArchivo final guardado como: {nombre_archivo}")
             print(f"Total de vehículos guardados: {len(all_vehicles_data)}")
@@ -107,9 +107,14 @@ def leer_excel(ruta_archivo):
         print(f"\nTiempo hasta el error: {tiempo_total}")
         return False
 
-# Ejemplo de uso
+    
 if __name__ == "__main__":
+    import sys
     #ruta_archivo = "/Users/marcosrodrigo/Desktop/Rutix Final/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
-    ruta_archivo = "/proyecto/manejador/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
 
-    leer_excel(ruta_archivo)
+    # Ruta del archivo y parámetros para dividir el procesamiento
+    ruta_archivo = "/proyecto/manejador/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
+    inicio = int(sys.argv[1])  # Fila inicial
+    fin = int(sys.argv[2])     # Fila final
+
+    leer_excel(ruta_archivo, inicio, fin)
