@@ -11,7 +11,6 @@ from selenium.webdriver.common.keys import Keys
 def scrape_satrack(username, password):
     # Add SSL certificate verification bypass
     ssl._create_default_https_context = ssl._create_unverified_context
-    driver = uc.Chrome(ChromeDriverManager().install(), options=options)
 
     # Configurar undetected-chromedriver con opciones básicas
     options = uc.ChromeOptions()
@@ -20,6 +19,7 @@ def scrape_satrack(username, password):
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--ignore-ssl-errors")
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36')
+    driver = uc.Chrome(ChromeDriverManager().install(), options=options)
 
     # Inicializar el driver
     #driver = uc.Chrome(driver_executable_path="/usr/local/bin/chromedriver", options=options)
