@@ -18,7 +18,9 @@ def scrape_satrack(username, password):
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--ignore-ssl-errors")
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36')
-
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--headless") 
     # Inicializar el driver
     driver = uc.Chrome(driver_executable_path="/usr/bin/chromedriver", options=options)    
     def print_element_info(element, name="Elemento"):
