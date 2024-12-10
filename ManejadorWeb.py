@@ -113,7 +113,7 @@ if __name__ == "__main__":
     #ruta_archivo = "/Users/marcosrodrigo/Desktop/Rutix Final/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
 
     # Ruta del archivo y parámetros para dividir el procesamiento
-    ruta_archivo = "/proyecto/manejador/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
+    ruta_archivo = "/home/labs/CargaLibre-Rutix/ARCHIVOS/BASE DE DATOS TERCERO.xls"
     inicio = int(sys.argv[1])  # Fila inicial
     fin = int(sys.argv[2])     # Fila final
 
