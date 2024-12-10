@@ -1,4 +1,4 @@
-
+resources:
 - name: cargaLibre-1
   type: compute.v1.instance
   properties:
@@ -21,10 +21,11 @@
       - key: startup-script
         value: |
           #!/bin/bash
-          sudo mkdir /home/labs
+          sudo mkdir -p /home/labs
           cd /home/labs
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
+
 - name: cargaLibre-2
   type: compute.v1.instance
   properties:
@@ -47,10 +48,11 @@
       - key: startup-script
         value: |
           #!/bin/bash
-          sudo mkdir /home/labs
+          sudo mkdir -p /home/labs
           cd /home/labs
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
+
 - name: cargaLibre-3
   type: compute.v1.instance
   properties:
@@ -73,7 +75,8 @@
       - key: startup-script
         value: |
           #!/bin/bash
-          sudo mkdir /home/labs
+          sudo mkdir -p /home/labs
           cd /home/labs
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
+de
