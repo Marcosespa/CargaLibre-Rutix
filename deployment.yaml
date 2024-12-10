@@ -1,3 +1,4 @@
+resources:
 - name: carga-libre-instance-1
   type: compute.v1.instance
   properties:
@@ -16,14 +17,18 @@
     metadata:
       startup-script: |
         #!/bin/bash
-        mkdir -p /proyecto/manejador
-        chmod -R 755 /proyecto
-        cd /proyecto/manejador
+        echo "Creando directorios..."
+        sudo mkdir -p /proyecto/manejador
+        sudo chmod -R 755 /proyecto
+        echo "Actualizando paquetes..."
         sudo apt-get update
         sudo apt-get install -y git python3 python3-pip
+        echo "Clonando el repositorio..."
         git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
+        echo "Instalando dependencias..."
         cd /opt/CargaLibre-Rutix
         sudo pip3 install -r requirements.txt
+        echo "Instalación completada."
 
 - name: carga-libre-instance-2
   type: compute.v1.instance
@@ -43,14 +48,18 @@
     metadata:
       startup-script: |
         #!/bin/bash
-        mkdir -p /proyecto/manejador
-        chmod -R 755 /proyecto
-        cd /proyecto/manejador
+        echo "Creando directorios..."
+        sudo mkdir -p /proyecto/manejador
+        sudo chmod -R 755 /proyecto
+        echo "Actualizando paquetes..."
         sudo apt-get update
         sudo apt-get install -y git python3 python3-pip
+        echo "Clonando el repositorio..."
         git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
+        echo "Instalando dependencias..."
         cd /opt/CargaLibre-Rutix
         sudo pip3 install -r requirements.txt
+        echo "Instalación completada."
 
 - name: carga-libre-instance-3
   type: compute.v1.instance
@@ -70,11 +79,15 @@
     metadata:
       startup-script: |
         #!/bin/bash
-        mkdir -p /proyecto/manejador
-        chmod -R 755 /proyecto
-        cd /proyecto/manejador
+        echo "Creando directorios..."
+        sudo mkdir -p /proyecto/manejador
+        sudo chmod -R 755 /proyecto
+        echo "Actualizando paquetes..."
         sudo apt-get update
         sudo apt-get install -y git python3 python3-pip
+        echo "Clonando el repositorio..."
         git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
+        echo "Instalando dependencias..."
         cd /opt/CargaLibre-Rutix
         sudo pip3 install -r requirements.txt
+        echo "Instalación completada."
