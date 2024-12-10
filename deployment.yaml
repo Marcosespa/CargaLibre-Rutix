@@ -1,93 +1,87 @@
-resources:
-- name: carga-libre-instance-1
-  type: compute.v1.instance
-  properties:
-    zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/localizadores-444314/zones/us-central1-a/machineTypes/e2-micro
-    disks:
-    - boot: true
-      autoDelete: true
-      initializeParams:
-        sourceImage: projects/debian-cloud/global/images/family/debian-11
-    networkInterfaces:
-    - network: global/networks/default
-      accessConfigs:
-      - name: External NAT
-        type: ONE_TO_ONE_NAT
-    metadata:
-      startup-script: |
-        #!/bin/bash
-        echo "Creando directorios..."
-        sudo mkdir -p /proyecto/manejador
-        sudo chmod -R 755 /proyecto
-        echo "Actualizando paquetes..."
-        sudo apt-get update
-        sudo apt-get install -y git python3 python3-pip
-        echo "Clonando el repositorio..."
-        git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
-        echo "Instalando dependencias..."
-        cd /opt/CargaLibre-Rutix
-        sudo pip3 install -r requirements.txt
-        echo "Instalación completada."
 
-- name: carga-libre-instance-2
+- name: cargaLibre-1
   type: compute.v1.instance
   properties:
     zone: us-central1-a
     machineType: https://www.googleapis.com/compute/v1/projects/localizadores-444314/zones/us-central1-a/machineTypes/e2-micro
     disks:
-    - boot: true
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
       autoDelete: true
       initializeParams:
-        sourceImage: projects/debian-cloud/global/images/family/debian-11
+        sourceImage: https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-101-17162-463-8
     networkInterfaces:
-    - network: global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/localizadores-444314/global/networks/default
       accessConfigs:
       - name: External NAT
         type: ONE_TO_ONE_NAT
+    tags:
     metadata:
-      startup-script: |
-        #!/bin/bash
-        echo "Creando directorios..."
-        sudo mkdir -p /proyecto/manejador
-        sudo chmod -R 755 /proyecto
-        echo "Actualizando paquetes..."
-        sudo apt-get update
-        sudo apt-get install -y git python3 python3-pip
-        echo "Clonando el repositorio..."
-        git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
-        echo "Instalando dependencias..."
-        cd /opt/CargaLibre-Rutix
-        sudo pip3 install -r requirements.txt
-        echo "Instalación completada."
+      items:
+      - key: startup-script
+        value: |
+          #!/bin/bash
+          sudo mkdir /home/labs
+          cd /home/labs
+          sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
+          cd CargaLibre-Rutix
 
-- name: carga-libre-instance-3
+
+
+- name: cargaLibre-2
   type: compute.v1.instance
   properties:
     zone: us-central1-a
     machineType: https://www.googleapis.com/compute/v1/projects/localizadores-444314/zones/us-central1-a/machineTypes/e2-micro
     disks:
-    - boot: true
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
       autoDelete: true
       initializeParams:
-        sourceImage: projects/debian-cloud/global/images/family/debian-11
+        sourceImage: https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-101-17162-463-8
     networkInterfaces:
-    - network: global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/localizadores-444314/global/networks/default
       accessConfigs:
       - name: External NAT
         type: ONE_TO_ONE_NAT
+    tags:
     metadata:
-      startup-script: |
-        #!/bin/bash
-        echo "Creando directorios..."
-        sudo mkdir -p /proyecto/manejador
-        sudo chmod -R 755 /proyecto
-        echo "Actualizando paquetes..."
-        sudo apt-get update
-        sudo apt-get install -y git python3 python3-pip
-        echo "Clonando el repositorio..."
-        git clone https://github.com/Marcosespa/CargaLibre-Rutix.git /opt/CargaLibre-Rutix
-        echo "Instalando dependencias..."
-        cd /opt/CargaLibre-Rutix
-        sudo pip3 install -r requirements.txt
-        echo "Instalación completada."
+      items:
+      - key: startup-script
+        value: |
+          #!/bin/bash
+          sudo mkdir /home/labs
+          cd /home/labs
+          sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
+          cd CargaLibre-Rutix
+
+
+- name: cargaLibre-3
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/localizadores-444314/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-101-17162-463-8
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/localizadores-444314/global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    tags:
+    metadata:
+      items:
+      - key: startup-script
+        value: |
+          #!/bin/bash
+          sudo mkdir /home/labs
+          cd /home/labs
+          sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
+          cd CargaLibre-Rutix
