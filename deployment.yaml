@@ -1,5 +1,5 @@
 resources:
-- name: cargaLibre-1
+- name: cargalibre-1
   type: compute.v1.instance
   properties:
     zone: us-central1-a
@@ -26,7 +26,7 @@ resources:
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
 
-- name: cargaLibre-2
+- name: cargalibre-2
   type: compute.v1.instance
   properties:
     zone: us-central1-a
@@ -53,7 +53,7 @@ resources:
           sudo git clone https://github.com/Marcosespa/CargaLibre-Rutix.git
           cd CargaLibre-Rutix
 
-- name: cargaLibre-3
+- name: cargalibre-3
   type: compute.v1.instance
   properties:
     zone: us-central1-a
