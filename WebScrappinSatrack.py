@@ -20,9 +20,9 @@ def scrape_satrack(username, password):
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36')
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--headless") 
+    # options.add_argument("--headless")  # Comentado para ver la ventana
     # Inicializar el driver
-    driver = uc.Chrome(driver_executable_path="/usr/bin/chromedriver", options=options)    
+    driver = uc.Chrome(options=options)    
     
     
     driver.set_page_load_timeout(60)  # Aumenta el tiempo de espera para la carga de la página
@@ -44,48 +44,31 @@ def scrape_satrack(username, password):
         driver.get("https://login.satrack.com/login")
         time.sleep(5)
 
-        # Modificar el script de JavaScript para usar el username proporcionado
-        driver.execute_script(f"""
-            let usernameField = document.querySelector('input[placeholder="Usuario"], input[aria-label="Usuario"], input[name="Usuario"]') ||
-                               document.querySelector('input[type="text"], input[type="email"]') ||
-                               document.getElementsByTagName('input')[0];
-            
-            if (usernameField) {{
-                usernameField.focus();
-                usernameField.value = '';
-                usernameField.value = '{username}';
-                usernameField.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                usernameField.dispatchEvent(new Event('change', {{ bubbles: true }}));
-                usernameField.dispatchEvent(new Event('blur', {{ bubbles: true }}));
-                
-                usernameField.dispatchEvent(new KeyboardEvent('keydown', {{ key: 'a' }}));
-                usernameField.dispatchEvent(new KeyboardEvent('keypress', {{ key: 'a' }}));
-                usernameField.dispatchEvent(new KeyboardEvent('keyup', {{ key: 'a' }}));
-            }}
-        """)
-        print("Intento de ingreso de usuario mediante JavaScript")
+        print("Buscando campo de usuario...")
+        user_input = WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.ID, 'txt_login_username'))
+        )
+        print("Campo de usuario encontrado. Limpiando y escribiendo usuario...")
+        user_input.clear()
+        user_input.send_keys(username)
+        print("Usuario escrito en el campo de usuario (Selenium send_keys).")
+        time.sleep(1)
+        username_value = user_input.get_attribute('value')
+        print(f"Valor actual del campo usuario (verificación): {username_value}")
 
-        # Verificar si el valor se estableció correctamente
-        username_value = driver.execute_script("""
-            let field = document.querySelector('input[type="text"], input[type="email"]');
-            return field ? field.value : '';
-        """)
-        print(f"Valor actual del campo usuario: {username_value}")
+        print("Buscando campo de contraseña...")
+        password_input = WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.ID, 'txt_login_password'))
+        )
+        print("Campo de contraseña encontrado. Limpiando y escribiendo contraseña...")
+        password_input.clear()
+        password_input.send_keys(password)
+        print("Contraseña escrita en el campo de contraseña (Selenium send_keys).")
+        time.sleep(1)
+        password_value = password_input.get_attribute('value')
+        print(f"Valor actual del campo contraseña (verificación): {password_value}")
 
         time.sleep(2)
-
-        # Modificar el script de JavaScript para usar el password proporcionado
-        driver.execute_script(f"""
-            let password = document.querySelector('input#password, input[name="password"], input[type="password"]');
-            if (password) {{
-                password.value = '{password}';
-                password.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                password.dispatchEvent(new Event('change', {{ bubbles: true }}));
-            }}
-        """)
-        print("Contraseña ingresada")
-
-        time.sleep(2)  # Pequeña pausa
 
         # Hacer clic en el botón de inicio de sesión
         driver.execute_script("""
@@ -210,7 +193,7 @@ def scrape_satrack(username, password):
                             // Función para extraer coordenadas del texto
                             function extractCoordinates(text) {
                                 if (!text) return null;
-                                const coordPattern = /Lat\/Long:\s*([-]?\d+\.\d+),\s*([-]?\d+\.\d+)/i;
+                                const coordPattern = /Lat\\/Long:\\s*([-]?\\d+\\.\\d+),\\s*([-]?\\d+\\.\\d+)/i;
                                 const match = text.match(coordPattern);
                                 if (match) {
                                     return `${match[1]}, ${match[2]}`;

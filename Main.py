@@ -9,7 +9,9 @@ def ejecutar_manejador_web():
     try:
         from ManejadorWeb import leer_excel
         ruta_archivo = input("\nIngrese la ruta del archivo Excel: ")
-        if leer_excel(ruta_archivo):
+        inicio = int(input("Ingrese el número de fila inicial: "))
+        fin = int(input("Ingrese el número de fila final: "))
+        if leer_excel(ruta_archivo, inicio, fin):
             print("\nProceso completado exitosamente.")
         else:
             print("\nEl proceso no se completó correctamente.")

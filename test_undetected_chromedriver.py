@@ -1,7 +1,7 @@
 import undetected_chromedriver as uc
 
 options = uc.ChromeOptions()
-options.add_argument("--headless")  # Opcional: ejecución sin interfaz gráfica
+options.add_argument("--headless")  
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
 
